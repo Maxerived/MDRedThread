@@ -1,0 +1,112 @@
+swagger: "2.0"
+info:
+  description: API développée dans le cadre du projet Fil Rouge du MS SIO, CentraleSupélec
+  version: 1.0.0
+  title: Projet Fil Rouge - Maximilien DERIVE
+  contact:
+    email: maximilien.derive@student-cs.fr
+host: redthreadapi.drv.p2021.ajoga.fr
+schemes:
+  - https
+paths:
+  /:
+    get:
+      tags:
+        - Bienvenue
+      summary: Page d'accueil de l'API
+      responses:
+        "200":
+          description: Succès
+          schema:
+            type: string
+            example: Bienvenue dans l'API Fil Rouge !
+  /upload_file:
+    post:
+      tags:
+        - Déposer un fichier
+      summary: Dépôt de fichier et retour des métadonnées et des données au format JSON
+      produces:
+        - application/json
+      consumes:
+        - multipart/form-data
+      parameters:
+        - name: file
+          in: formData
+          type: file
+          required: true
+          description: Sélectionnez un fichier à charger
+      responses:
+        "200":
+          description: Succès
+          schema:
+            type: object
+            properties:
+              DataInJson:
+                type: string
+                description: fichier traduit en JSON
+              Metadata:
+                type: object
+                properties:
+                  Métadonnées associées au fichier:
+                    type: string
+              Recognized: 
+                type: object
+                properties:
+                  Objets détectés dans l'image (uniquement JPG et PNG):
+                    type: string
+        "401":
+          description: Authentification manquante / Identifiant inconnu / Mot de passe incorrect
+          schema:
+            type: string
+            example:
+              - + Authentification nécessaire. Ajoutez l'option -u username:password
+              - + Identifiant inconnu
+              - + Mot de passe incorrect
+        "413":
+          description: Le fichier chargé est trop volumineux (> 10Mo)
+          schema:
+            type: string
+            example:
+              - <html>
+              - <head><title>413 Request Entity Too Large</title></head>
+              - <body>
+              - <center><h1>413 Request Entity Too Large</h1></center>
+              - <hr><center>nginx/1.15.12</center>
+              - </body>
+              - </html>
+        "415":
+          description: Fonctionnalité réclamée non supportée par le serveur.
+          schema:
+            type: string
+            example:
+              - + Extension inexistante ou non prise en charge.
+              - + Format non pris en charge.
+        "500":
+          description: Erreur interne au serveur
+          schema:
+            type: string
+            example:
+              - + Problème à l'ouverture de l'image. Format non pris en charge.
+              - + Formats acceptés bmp csv docx gif jpg jpeg pdf png txt
+              - + Problème lors du chargement du fichier vers le bucket S3.
+              - + Credentials invalides !
+              - + Profil AWS non trouvé
+              - + Fichier vide
+              - + Aucun fichier sélectionné
+        "503":
+          description: Service temporairement indisponible. Nombre de requêtes posibles dépassé (> 12/min)
+          schema:
+            type: string
+            example:
+              - <html>
+              - <head><title>503 Service Temporarily Unavailable</title></head>
+              - <body>
+              - <center><h1>503 Service Temporarily Unavailable</h1></center>
+              - <hr><center>nginx/1.15.12</center>
+              - </body>
+              - </html>
+      security:
+        - BasicAuth: []
+securityDefinitions:
+  BasicAuth:
+    type: basic
