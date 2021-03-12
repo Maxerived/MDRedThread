@@ -7,11 +7,12 @@ import sqlite3
 from flask import abort, request
 from functools import wraps
 
+DB_PATH = "users_auth.db"
 
 def get_hash_from_db(identifiant):
 
     # Connexion à la base de données
-    conn = sqlite3.connect("users_auth.db")
+    conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     print("[INFO] Connexion réussie à SQLite")
 
@@ -56,7 +57,7 @@ def login_required(f):
         if hash_db is None:
             abort(401, "Identifiant inconnu.")
 
-        # Récupération du salt et calcul du hash avec le salt et le mdp entré apr l'utilisateur
+        # Récupération du salt et calcul du hash avec le salt et le mdp entré par l'utilisateur
         salt = hash_db[:32]
         key = hashlib.pbkdf2_hmac(
             "sha256", password.encode("utf-8"), salt, 100000, dklen=128
@@ -68,6 +69,39 @@ def login_required(f):
     
         return f(*args, **kwargs)
     
+    return decorated_function
+
+
+def admin_required(f):
+    """Décorateur pour vérifier que l'utilisateur est bien authentifié"""
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+
+        if request.authorization is None:
+            error = "Authentification nécessaire. Ajoutez l'option -u username:password"
+            abort(401, error)
+
+        cred = request.authorization
+        username = cred.get('username')
+        password = cred.get('password')
+        if username == "admin":
+            hash_db = get_hash_from_db(username)
+        else:
+            abort(401, "Seul l'administrateur a accès à cette fonctionnalité.")
+
+        # Récupération du salt et calcul du hash avec le salt et le mdp entré par l'utilisateur
+        salt = hash_db[:32]
+        key = hashlib.pbkdf2_hmac(
+            "sha256", password.encode("utf-8"), salt, 100000, dklen=128
+        )
+
+        # Si le mot de passe est incorrect
+        if hash_db[32:] != key:
+            abort(401, "Mot de passe incorrect.")
+
+        return f(*args, **kwargs)
+
     return decorated_function
 
 

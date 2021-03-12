@@ -3,7 +3,7 @@
 
 import os
 
-from flask import abort, Flask, jsonify, request
+from flask import abort, Flask, jsonify, request, send_from_directory
 from flask_swagger_ui import get_swaggerui_blueprint
 from file_manager import *
 from login import *
@@ -11,13 +11,13 @@ from login import *
 
 app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = "./static/temp"
-app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
+app.config['TEMP_FOLDER'] = "./static/temp"
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 app.secret_key = os.urandom(24)
 
-pathFolders = app.config["UPLOAD_FOLDER"].split("/")
-pathFolder = pathFolders[0]
-for folder in pathFolders[1:]:
+PATH_FOLDERS = app.config["TEMP_FOLDER"].split("/")
+pathFolder = PATH_FOLDERS[0]
+for folder in PATH_FOLDERS[1:]:
     pathFolder += "/" + folder
     if not os.path.isdir(pathFolder):
         os.mkdir(pathFolder)
@@ -25,9 +25,9 @@ for folder in pathFolders[1:]:
 
 
 SWAGGER_URL = '/swagger'  # URL for exposing Swagger UI (without trailing '/')
-API_URL = "/static/swagger.yml"
+API_URL = "/static/swagger.yaml"
 
-swaggerui_blueprint = get_swaggerui_blueprint(
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
     config={
@@ -35,7 +35,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     },
 )
 
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 
 @app.after_request
@@ -48,13 +48,17 @@ def after_request(response):
 
 
 @app.route("/", methods=["GET"])
+@empty_temp_folder
 def index():
-    return jsonify("Bienvenue sur l'API Fil Rouge !")
+    """Page d'accueil de l'API"""
+
+    return jsonify("Bienvenue sur l'API Fil Rouge !"), 200
 
 
-@app.route("/upload_file", methods=["GET", "POST"])
+@app.route("/upload", methods=["GET", "POST"])
 @login_required
-def upload_file():
+@empty_temp_folder
+def upload():
     """Pour extraire les métadonnées d'un fichier et les insérer dans une base
     de données, puis poster cette même image sur le système de fichiers du serveur"""
 
@@ -65,24 +69,59 @@ def upload_file():
         if type(file) != dict:
             return file
 
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file['filename'])
+        filepath = os.path.join(app.config['TEMP_FOLDER'], file['filename'])
 
         # Enregistrement du fichier sur le serveur
         file['file'].save(filepath)
-        print("[INFO] Fichier déposé dans le répertoire {}".format(app.config['UPLOAD_FOLDER']))
+        print("[INFO] Fichier déposé dans le répertoire {}".format(app.config['TEMP_FOLDER']))
 
         # Création de la réponse contenant les données en JSON et les métadonnées
         response = create_response(filepath)
 
         # Envoi dans le bucket S3
-        #send_to_s3(filepath)
+        send_to_s3(filepath)
 
         # Suppression du fichier d'origine
         os.remove(filepath)
-        print("[INFO] Fichier chargé par l'utilisateur supprimé du répertoire {}".format(app.config['UPLOAD_FOLDER']))
-        
-        # Envoi du fichier zip au client
-        return response
+        print("[INFO] Fichier chargé par l'utilisateur supprimé du répertoire {}".format(
+            app.config['TEMP_FOLDER']))
+
+        return response, 200
+
+
+@app.route("/list_files", methods=["GET"])
+@login_required
+@empty_temp_folder
+def list_files():
+    """Fonction qui renvoie le nom de tous les fichiers dans le bucket S3"""
+
+    return jsonify(list_files_in_bucket()), 200
+
+
+@app.route("/download/<filename>", methods=["GET", "POST"])
+@login_required
+@empty_temp_folder
+def download(filename):
+    """Fonction qui télécharge un fichier depuis le bucket S3"""
+
+    download_from_bucket(filename)
+
+    if os.path.isfile(os.path.join(app.config['TEMP_FOLDER'], filename)):
+        return send_from_directory(app.config['TEMP_FOLDER'], filename, as_attachment=True), 200
+
+    else:
+        return jsonify("Le fichier n'existe pas dans le bucket !!!"), 204
+
+
+@app.route("/empty_bucket", methods=["GET"])
+@admin_required
+@empty_temp_folder
+def empty_bucket():
+    """Fonction qui supprime tous les objets du bucket"""
+
+    delete_all_bucket_files()
+
+    return jsonify("Tous les fichiers du bucket S3 ont ete supprimes."), 200
 
 
 if __name__ == "__main__":

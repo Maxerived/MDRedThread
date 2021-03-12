@@ -11,12 +11,27 @@ from datetime import datetime
 from flask import abort
 from get_metadata import *
 from werkzeug.utils import secure_filename
+from functools import wraps
 
 
 ALLOWED_FORMATS = ["bmp", "csv", "docx", "gif", "jpg", "jpeg", "pdf", "png", "txt"]
 ALLOWED_IMAGE_FORMATS = ["bmp", "gif", "jpg", "jpeg", "png"]
 BUCKET_NAME = "mdrv-cs"
-ZIP_FILENAME = "json_temp.zip"    
+TEMP_FOLDER="./static/temp"
+
+
+def empty_temp_folder(f):
+    """Décorateur pour vider le répertoire /static/temp"""
+
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+
+        for file in os.listdir(TEMP_FOLDER):
+            os.remove(os.path.join(TEMP_FOLDER, file))
+    
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 def get_metadata(filepath):
@@ -101,16 +116,19 @@ def send_to_s3(filepath):
         # Connexion à s3 avec les credentials
         session = boto3.Session(profile_name = 'csloginstudent')
         s3_client = session.client('s3')
-        
-        # Récupération de la liste des noms des objets contenus dans le bucket s3
-        bucketObjectsList = [obj.get('Key') \
-            for obj in s3_client.list_objetcs(Bucket=BUCKET_NAME).get('Contents')]
-        
-        # Changement de filename si un objet a déjà le nom défini
-        index = 1
-        while filename in bucketObjectsList:
-            index += 1
-            filename += "_" + str(index)
+
+        bucketObjects = s3_client.list_objects_v2(Bucket=BUCKET_NAME)
+        if 'Contents' in bucketObjects:
+
+            # Récupération de la liste des noms des objets contenus dans le bucket s3
+            bucketObjectsList = [obj.get('Key') \
+                for obj in bucketObjects.get('Contents')]
+                        
+            # Changement de filename si un objet a déjà le nom défini
+            index = 1
+            while filename in bucketObjectsList:
+                index += 1
+                filename += "_" + str(index)
 
         # Chargement du fichier dans le bucket s3
         s3_client.upload_file(Filename = filepath, Bucket = BUCKET_NAME, Key = filename)
@@ -119,15 +137,106 @@ def send_to_s3(filepath):
     except ClientError as e:
         logging.error(e)
         abort(500, "Problème lors du chargement du fichier vers le bucket S3.")
-
     except NoCredentialsError:
-        abort(500, "Credentials invalides !")
-
+        abort(401, "Credentials invalides !")
     except ProfileNotFound:
-        abort(500, "Profil AWS non trouvé")
-
+        abort(401, "Profil AWS non trouvé")
     except:
         abort(500, "Un problème est survenu lors du chargement dans le bucket s3.")
+
+
+def list_files_in_bucket():
+    """Fonction qui renvoie le nom des fichiers insérés dans le bucket S3"""
+
+    try:
+        # Connexion à s3 avec les credentials
+        session = boto3.Session(profile_name = 'csloginstudent')
+        s3_client = session.client('s3')
+        
+        bucketObjects = s3_client.list_objects_v2(Bucket=BUCKET_NAME)
+        files = {}
+
+        if 'Contents' in bucketObjects:
+
+            # Récupération de la liste des noms des objets contenus dans le bucket s3
+            bucketObjectsList = [obj.get('Key') \
+                for obj in bucketObjects.get('Contents')]
+
+            # Tranformation de la liste en dictionnaire (pour jsonify)
+            i = 0
+            while i < len(bucketObjectsList):
+                files["file" + "{:04d}".format(i + 1)] = bucketObjectsList[i]
+                i += 1
+
+        return files
+
+    except NoCredentialsError:
+        abort(401, "Credentials invalides !")
+    except ProfileNotFound:
+        abort(401, "Profil AWS non trouvé")
+    except:
+        abort(500, "un problème non géré est survenu.")
+
+
+def download_from_bucket(filename):
+    """Fonction qui renvoie le nom des fichiers insérés dans le bucket S3"""
+
+    try:
+        # Connexion à s3 avec les credentials
+        session = boto3.Session(profile_name = 'csloginstudent')
+        s3_client = session.client('s3')
+
+        bucketObjects = s3_client.list_objects_v2(Bucket=BUCKET_NAME)
+        if 'Contents' in bucketObjects:
+            
+            # Récupération de la liste des noms des objets contenus dans le bucket s3
+            bucketObjectsList = [obj.get('Key') \
+                for obj in bucketObjects.get('Contents')]
+
+            if filename in bucketObjectsList:
+                s3_client.download_file(
+                    BUCKET_NAME,
+                    filename,
+                    os.path.join(TEMP_FOLDER, filename)
+                )
+
+    except NoCredentialsError:
+        abort(401, "Credentials invalides !")
+    except ProfileNotFound:
+        abort(401, "Profil AWS non trouvé")
+    except:
+        abort(500, "Un problème non géré est survenu.")
+
+
+def delete_all_bucket_files():
+    """Fonction supprime tous les fichiers déposés
+    dans le bucket S3 par les utilisateurs"""
+
+    try:
+        # Connexion à s3 avec les credentials
+        session = boto3.Session(profile_name = 'csloginstudent')
+        s3_client = session.client('s3')
+
+        bucketObjects = s3_client.list_objects_v2(Bucket=BUCKET_NAME)
+        if 'Contents' in bucketObjects:
+            for item in bucketObjects['Contents']:
+                print('[INFO] Deleting file', item['Key'])
+                s3_client.delete_object(Bucket=BUCKET_NAME, Key=item['Key'])
+                while bucketObjects['KeyCount'] == 1000:
+                     bucketObjects = s3_client.list_objects_v2(
+                         Bucket=BUCKET_NAME,
+                         StartAfter=bucketObjects['Contents'][0]['Key'],
+                     )
+                for item in bucketObjects['Contents']:
+                    print('[INFO] Deleting file', item['Key'])
+                    s3_client.delete_object(Bucket=BUCKET_NAME, Key=item['Key'])
+
+    except NoCredentialsError:
+        abort(401, "Credentials invalides !")
+    except ProfileNotFound:
+        abort(401, "Profil AWS non trouvé")
+    except:
+        abort(500, "Un problème non géré est survenu.")
 
 
 def image_reko(filepath, nbLabels):
@@ -148,7 +257,6 @@ def image_reko(filepath, nbLabels):
 
     except ProfileNotFound:
         labels = None
-
     except:
         abort(500, "Un problème est survenu lors de la requête à rekognition.")
 
