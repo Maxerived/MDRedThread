@@ -12,7 +12,7 @@ from login import *
 app = Flask(__name__)
 
 app.config['TEMP_FOLDER'] = "./static/temp"
-app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024
 app.secret_key = os.urandom(24)
 
 PATH_FOLDERS = app.config["TEMP_FOLDER"].split("/")
@@ -48,7 +48,6 @@ def after_request(response):
 
 
 @app.route("/", methods=["GET"])
-@empty_temp_folder
 def index():
     """Page d'accueil de l'API"""
 
@@ -57,7 +56,6 @@ def index():
 
 @app.route("/upload", methods=["GET", "POST"])
 @login_required
-@empty_temp_folder
 def upload():
     """Pour extraire les métadonnées d'un fichier et les insérer dans une base
     de données, puis poster cette même image sur le système de fichiers du serveur"""
@@ -66,8 +64,6 @@ def upload():
 
         # Vérification du fichier envoyé
         file = check_request(request.files)
-        if type(file) != dict:
-            return file
 
         filepath = os.path.join(app.config['TEMP_FOLDER'], file['filename'])
 
@@ -91,7 +87,6 @@ def upload():
 
 @app.route("/list_files", methods=["GET"])
 @login_required
-@empty_temp_folder
 def list_files():
     """Fonction qui renvoie le nom de tous les fichiers dans le bucket S3"""
 
@@ -100,22 +95,23 @@ def list_files():
 
 @app.route("/download/<filename>", methods=["GET", "POST"])
 @login_required
-@empty_temp_folder
 def download(filename):
     """Fonction qui télécharge un fichier depuis le bucket S3"""
 
     download_from_bucket(filename)
 
     if os.path.isfile(os.path.join(app.config['TEMP_FOLDER'], filename)):
-        return send_from_directory(app.config['TEMP_FOLDER'], filename, as_attachment=True), 200
+        try:
+            return send_from_directory(app.config['TEMP_FOLDER'], filename, as_attachment=True), 200
+        finally:
+            os.remove(os.path.join(app.config['TEMP_FOLDER'], filename))
 
     else:
-        return jsonify("Le fichier n'existe pas dans le bucket !!!"), 204
+        return '', 204
 
 
-@app.route("/empty_bucket", methods=["GET"])
+@app.route("/empty_bucket", methods=["DELETE"])
 @admin_required
-@empty_temp_folder
 def empty_bucket():
     """Fonction qui supprime tous les objets du bucket"""
 

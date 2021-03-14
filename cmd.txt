@@ -1,1 +1,0 @@
-curl -kiL -X GET -u lambda:0000 https://redthreadapi.drv.p2021.ajoga.fr/download

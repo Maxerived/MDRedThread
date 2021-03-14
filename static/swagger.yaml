@@ -25,6 +25,11 @@ paths:
       tags:
         - Déposer un fichier
       summary: Dépôt de fichier et retour des métadonnées et des données au format JSON
+      description: >-
+        Authentifiez vous dans un premier temps en cliquant sur le cadenas à droite de l'écran.
+        Le fichier que vous allez charger sera archivé dans un bucket S3 et vous recevrez
+        en retour le contenu du fichier au format JSON, des métadonnées associées au fichier et,
+        pour les fichiers JPG et PNG, les éléments reconnus par le service Amazon Rekognition.
       produces:
         - application/json
       consumes:
@@ -62,12 +67,12 @@ paths:
             type: string
             example:
               - >-
-                + Authentification nécessaire. Ajoutez l'option -u
+                Authentification nécessaire. Ajoutez l'option -u
                 username:password
-              - + Identifiant inconnu
-              - + Mot de passe incorrect
-              - + Credentials invalides !
-              - + Profil AWS non trouvé
+              - Identifiant inconnu
+              - Mot de passe incorrect
+              - Credentials invalides !
+              - Profil AWS non trouvé
         '413':
           description: Le fichier chargé est trop volumineux (> 10Mo)
           schema:
@@ -85,18 +90,18 @@ paths:
           schema:
             type: string
             example:
-              - + Extension inexistante ou non prise en charge.
-              - + Format non pris en charge.
+              - Extension inexistante ou non prise en charge.
+              - Format non pris en charge.
         '500':
           description: Erreur interne au serveur
           schema:
             type: string
             example:
-              - + Problème à l'ouverture de l'image. Format non pris en charge.
-              - + Formats acceptés bmp csv docx gif jpg jpeg pdf png txt
-              - + Problème lors du chargement du fichier vers le bucket S3.
-              - + Fichier vide
-              - + Aucun fichier sélectionné
+              - Problème à l'ouverture de l'image. Format non pris en charge.
+              - Mime-types acceptés image/x-ms-bmp, text/csv, application/csv, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/gif, image/jpeg, image/png, application/pdf, text/plain, audio/flac, audio/x-flac, audio/x-ogg, audio/mp4, audio/mp4a-latm, audio/x-m4a, video/mp4, audio/mpeg, audio/MPA, audio/mp3, audio/mpeg3, audio/wave, audio/wav, audio/x-wav, audio/vnd.wave, audio/x-pn-wav, audio/x-ms-wma, video/x-ms-asf /          / Extensions acceptées m4a, wav, mp3, txt, jpeg, wma, flac, bmp, csv, pdf, png, docx, gif 
+              - Problème lors du chargement du fichier vers le bucket S3.
+              - Fichier vide
+              - Aucun fichier sélectionné
         '503':
           description: >-
             Service temporairement indisponible. Nombre de requêtes posibles
@@ -120,6 +125,10 @@ paths:
       summary: >-
         Consultation la liste des noms des fichiers déposés dans le bucket S3
         par les utilisateurs
+      description: >-
+        Authentifiez vous dans un premier temps en cliquant sur le cadenas à droite de l'écran.
+        En lançant cette requête, vous allez recevoir le nom de l'ensemble des fichiers
+        qui ont été déposés dans le bucket S3.
       produces:
         - application/json
       responses:
@@ -139,12 +148,12 @@ paths:
             type: string
             example:
               - >-
-                + Authentification nécessaire. Ajoutez l'option -u
+                Authentification nécessaire. Ajoutez l'option -u
                 username:password
-              - + Identifiant inconnu
-              - + Mot de passe incorrect
-              - + Credentials invalides !
-              - + Profil AWS non trouvé
+              - Identifiant inconnu
+              - Mot de passe incorrect
+              - Credentials invalides !
+              - Profil AWS non trouvé
         '500':
           description: Erreur interne au serveur
           schema:
@@ -171,10 +180,13 @@ paths:
     get:
       tags:
         - Télécharger un fichier
-      summary: >-
-        Téléchargement d'un fichier depuis le bucket S3. Exécutez d'abord la
-        commande ci-dessus, puis copiez-collez le nom d'un des fichiers du
-        bucket
+      summary: Téléchargement d'un fichier depuis le bucket S3.
+      description: >-
+        Authentifiez vous dans un premier temps en cliquant sur le cadenas à droite de l'écran.
+        Exécutez d'abord la commande ci-dessus, puis copiez-collez le nom d'un des fichiers du
+        bucket dans le champ ci-dessous prévu à cet effet. Si c'est un fichier TXT ou CSV,
+        il s'affichera directement comme réultat. Dans le cas contraire, il vous sera proposé
+        de télécharger le fichier.
       parameters:
         - in: path
           name: filename
@@ -204,12 +216,12 @@ paths:
             type: string
             example:
               - >-
-                + Authentification nécessaire. Ajoutez l'option -u
+                Authentification nécessaire. Ajoutez l'option -u
                 username:password
-              - + Identifiant inconnu
-              - + Mot de passe incorrect
-              - + Credentials invalides !
-              - + Profil AWS non trouvé
+              - Identifiant inconnu
+              - Mot de passe incorrect
+              - Credentials invalides !
+              - Profil AWS non trouvé
         '500':
           description: Erreur interne au serveur
           schema:
@@ -237,6 +249,10 @@ paths:
       tags:
         - Vider le bucket S3
       summary: Supprimer tous les fichiers du bucket S3 (uniquement pour l'admin)
+      description: >-
+        Authentifiez vous dans un premier temps en cliquant sur le cadenas à droite de l'écran.
+        En lançant cette commande, l'administrateur peut supprimer tous les fichiers déposés
+        dans le bucket S3
       produces:
         - application/json
       responses:
@@ -254,12 +270,12 @@ paths:
             type: string
             example:
               - >-
-                + Authentification nécessaire. Ajoutez l'option -u
+                Authentification nécessaire. Ajoutez l'option -u
                 username:password
-              - + Seul l'administrateur a accès à cette fonctionnalité.
-              - + Mot de passe incorrect
-              - + Credentials invalides !
-              - + Profil AWS non trouvé
+              - Seul l'administrateur a accès à cette fonctionnalité.
+              - Mot de passe incorrect
+              - Credentials invalides !
+              - Profil AWS non trouvé
         '500':
           description: Erreur interne au serveur
           schema:

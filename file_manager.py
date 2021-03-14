@@ -14,24 +14,11 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 
 
-ALLOWED_FORMATS = ["bmp", "csv", "docx", "gif", "jpg", "jpeg", "pdf", "png", "txt"]
 ALLOWED_IMAGE_FORMATS = ["bmp", "gif", "jpg", "jpeg", "png"]
+ALLOWED_AUDIO_FORMATS = ["flac", "m4a", "mp3", "wav", "wma", "opus", "ogg"]
+
 BUCKET_NAME = "mdrv-cs"
 TEMP_FOLDER="./static/temp"
-
-
-def empty_temp_folder(f):
-    """Décorateur pour vider le répertoire /static/temp"""
-
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-
-        for file in os.listdir(TEMP_FOLDER):
-            os.remove(os.path.join(TEMP_FOLDER, file))
-    
-        return f(*args, **kwargs)
-
-    return decorated_function
 
 
 def get_metadata(filepath):
@@ -45,7 +32,13 @@ def get_metadata(filepath):
 
     # Si le format n'est pas pris en charge par l'application
     if format not in ALLOWED_FORMATS:
-        abort(415, "Formats acceptés : " + str(ALLOWED_FORMATS))
+        abort(415, "Mime-types acceptés : " + str(ALLOWED_MIME_TYPES) + \
+            "/          /" + "Extensions acceptées : " + str(ALLOWED_FORMATS))
+
+    # Si le fichier est un audio
+    if format.lower() in ALLOWED_AUDIO_FORMATS:
+        # Récupération des métadonnées
+        metadata = get_audio_metadata(filepath)
 
     # Si le fichier est une image
     if format in ALLOWED_IMAGE_FORMATS:
@@ -90,19 +83,19 @@ def jsonify_data(filepath):
 
     # Si le format n'est pas pris en charge par l'application
     if format == None or format.lower() not in ALLOWED_FORMATS:
-        abort(415, "Formats acceptés : " + str(ALLOWED_FORMATS))
+        abort(415, "Mime-types acceptés : " + str(ALLOWED_MIME_TYPES) + \
+            "/          /" + "Extensions acceptées : " + str(ALLOWED_FORMATS))
 
-    # Si le fichier est une image
-    if format in ALLOWED_IMAGE_FORMATS + ["docx", "pdf"]:
-        # Récupération des données et encodage en base64
-        with open(filepath, mode='rb') as file:
-            data = base64.b64encode(file.read()).decode('utf-8')
-
-    # Si le fichier est un .txt
+    # Si le fichier est un .txt ou un .csv
     if format in ["txt", "csv"]:
         # Récupération des données
         with open(filepath, 'r') as file:
             data = file.read()
+    # Si le fichier est dans un autre format
+    else:
+        # Récupération des données et encodage en base64
+        with open(filepath, mode='rb') as file:
+            data = base64.b64encode(file.read()).decode('utf-8')
 
     return json.dumps(data)
 
@@ -126,9 +119,11 @@ def send_to_s3(filepath):
                         
             # Changement de filename si un objet a déjà le nom défini
             index = 1
+            previous = filename.rsplit(".", 1)[0]
+            ext = filename.rsplit(".", 1)[1]
             while filename in bucketObjectsList:
                 index += 1
-                filename += "_" + str(index)
+                filename += previous + "_" + str(index) + ext
 
         # Chargement du fichier dans le bucket s3
         s3_client.upload_file(Filename = filepath, Bucket = BUCKET_NAME, Key = filename)
@@ -170,12 +165,15 @@ def list_files_in_bucket():
 
         return files
 
+    except ClientError as e:
+        logging.error(e)
+        abort(500, "Problème lors du chargement du fichier vers le bucket S3.")
     except NoCredentialsError:
         abort(401, "Credentials invalides !")
     except ProfileNotFound:
         abort(401, "Profil AWS non trouvé")
     except:
-        abort(500, "un problème non géré est survenu.")
+        abort(500, "un problème inconnu est survenu.")
 
 
 def download_from_bucket(filename):
@@ -200,12 +198,15 @@ def download_from_bucket(filename):
                     os.path.join(TEMP_FOLDER, filename)
                 )
 
+    except ClientError as e:
+        logging.error(e)
+        abort(500, "Problème lors du chargement du fichier vers le bucket S3.")
     except NoCredentialsError:
         abort(401, "Credentials invalides !")
     except ProfileNotFound:
         abort(401, "Profil AWS non trouvé")
     except:
-        abort(500, "Un problème non géré est survenu.")
+        abort(500, "Un problème inconnu est survenu.")
 
 
 def delete_all_bucket_files():
@@ -231,12 +232,15 @@ def delete_all_bucket_files():
                     print('[INFO] Deleting file', item['Key'])
                     s3_client.delete_object(Bucket=BUCKET_NAME, Key=item['Key'])
 
+    except ClientError as e:
+        logging.error(e)
+        abort(500, "Problème lors du chargement du fichier vers le bucket S3.")
     except NoCredentialsError:
         abort(401, "Credentials invalides !")
     except ProfileNotFound:
         abort(401, "Profil AWS non trouvé")
     except:
-        abort(500, "Un problème non géré est survenu.")
+        abort(500, "Un problème inconnu est survenu.")
 
 
 def image_reko(filepath, nbLabels):

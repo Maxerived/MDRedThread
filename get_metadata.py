@@ -13,6 +13,8 @@ from hachoir.metadata import extractMetadata
 from PIL import Image, UnidentifiedImageError
 from PIL.ExifTags import TAGS
 from string import punctuation
+from tinytag import TinyTag
+
 
 # Dictionnaire contenant des extensions associées 
 # aux MIME-type utilisés par l'API
@@ -21,40 +23,47 @@ EXT_MIME = {
     "BMP" : "image/x-ms-bmp",
     "csv" : "text/csv",
     "CSV" : "application/csv",
-    "docx":	"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "gif" : "image/gif",
+    "jpg" : "image/jpeg",
     "jpeg": "image/jpeg",
     "png" : "image/png",
     "pdf" : "application/pdf",
     "txt" : "text/plain",
-    # "flac": "audio/flac",
-    # "m4a" : "audio/mp4",
-    # "mp3" : "audio/mpeg",
-    # "MP3" : "audio/mp3",
-    # "waV" : "audio/wave",
-    # "wAv" : "audio/wav",
-    # "wav" : "audio/x-wav",
-    # "WAV" : "audio/x-pn-wav",
-    # "weba": "audio/webm",
-    # "webm": "video/webm",
-    # "oga" : "audio/ogg",
-    # "ogv" : "video/ogg",
-    # "ogx" : "application/ogg"
+    "flac": "audio/flac",
+    "Flac": "audio/x-flac",
+    "fLac": "audio/x-ogg",
+    "m4a" : "audio/mp4",
+    "m4A" : "audio/mp4a-latm",
+    "M4a" : "audio/x-m4a",
+    "M4A" : "video/mp4",
+    "mp3" : "audio/mpeg",
+    "mP3" : "audio/MPA",
+    "MP3" : "audio/mp3",
+    "Mp3" : "audio/mpeg3",
+    "waV" : "audio/wave",
+    "wAv" : "audio/wav",
+    "wav" : "audio/x-wav",
+    "Wav" : "audio/vnd.wave",
+    "WAV" : "audio/x-pn-wav",
+    "wma" : "audio/x-ms-wma",
+    "Wma" : "video/x-ms-asf",
+    "opus": "audio/ogg",
+    "ogg" : "audio/ogg"
 }
 
-ALLOWED_FORMATS = EXT_MIME.keys()
-ALLOWED_IMAGE_FORMATS = { "bmp", "gif", "jpg", "jpeg", "png"}
-
+ALLOWED_FORMATS = list(set([ext.lower() for ext in EXT_MIME.keys()]))
+ALLOWED_MIME_TYPES = list(EXT_MIME.values())
 
 def mimetype(filepath):
     """Fonction qui retourne le MIME-type d'un fichier"""
 
     try:
         mimeType = magic.from_file(filepath, mime=True)
-
+        print(mimeType)
     except:
         mimeType = magic.Magic(flags=magic.flags.MAGIC_MIME_TYPE).id_filename(filepath)
-
+        print(mimeType)
     return mimeType
 
 
@@ -74,6 +83,38 @@ def file_format(filepath):
     mimeType = mimetype(filepath)
 
     return extension_from_mime(mimeType)
+
+
+def get_audio_metadata(filepath):
+    """Fonction qui prend en entrée le chemin d'un fichier audio
+    et retourne un dictionnaire contenant les métadonnées"""
+
+    metadata = {}
+
+    try:
+        tag = TinyTag.get(filepath)
+
+        metadata["Album"] = tag.album
+        metadata["AlbumArtist"] = tag.albumartist
+        metadata["Artist"] = tag.artist
+        metadata["AudioOffset"] = tag.audio_offset
+        metadata["Bitrate"] = tag.bitrate
+        metadata["Comment"] = tag.comment
+        metadata["Composer"] = tag.composer
+        metadata["Disc"] = tag.disc
+        metadata["DiscTotal"] = tag.disc_total
+        metadata["Duration"] = tag.duration
+        metadata["Genre"] = tag.genre
+        metadata["Samplerate"] = tag.samplerate
+        metadata["Title"] = tag.title
+        metadata["Track"] = tag.track
+        metadata["TrackTotal"] = tag.track_total
+        metadata["Year"] = tag.year
+
+    except:
+        pass
+
+    return metadata
 
 
 def get_image_metadata(filepath):

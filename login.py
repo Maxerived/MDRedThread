@@ -85,7 +85,7 @@ def admin_required(f):
         cred = request.authorization
         username = cred.get('username')
         password = cred.get('password')
-        if username == "admin":
+        if username in ["admin", "francois.laissus", "cyril.rognon", "aurelien.joga"]:
             hash_db = get_hash_from_db(username)
         else:
             abort(401, "Seul l'administrateur a accès à cette fonctionnalité.")

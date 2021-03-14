@@ -153,15 +153,16 @@ def ask_and_add_or_delete_user():
             # Récupération du nom des utilisateurs
             users = get_users()
             user = None
-            while user not in users or user == "admin":
+            while (user not in users or user == "admin") and user != "A":
                 if user == "admin":
                     # Indication d'impossibilité de suppression de l'admin
                     print("Impossible de supprimer l'utilisateur admin.")
                 # Affichage des utilisateurs en base
                 print("Les utilisateurs en base sont les suivants :", users)
                 # Demande de l'utilisateur à supprimer
-                user = input("Quel utilisateur souhaitez-vous supprimer ? ")
-            delete_user(user)
+                user = input("Quel utilisateur souhaitez-vous supprimer ? Aucun (A) ? ")
+            if user != "A":
+                delete_user(user)
 
         # Tant que l'admin ne répond pas par N, la question suivante est posée
         response = input("Souhaitez-vous Ajouter ou Supprimer un utilisateur ? (A/S/N) ")

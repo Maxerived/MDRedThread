@@ -132,7 +132,7 @@
               "application/json": {
                 "schema": {
                   "type": "string",
-                  "example": "[+ Problème à l'ouverture de l'image. Format non pris en charge., + Formats acceptés bmp csv docx gif jpg jpeg pdf png txt, + Problème lors du chargement du fichier vers le bucket S3., + Fichier vide, + Aucun fichier sélectionné]"
+                  "example": "[+ Problème à l'ouverture de l'image. Format non pris en charge., + Mime-types acceptés image/x-ms-bmp, text/csv, application/csv, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/gif, image/jpeg, image/png, application/pdf, text/plain, audio/flac, audio/x-flac, audio/x-ogg, audio/mp4, audio/mp4a-latm, audio/x-m4a, video/mp4, audio/mpeg, audio/MPA, audio/mp3, audio/mpeg3, audio/wave, audio/wav, audio/x-wav, audio/vnd.wave, audio/x-pn-wav, audio/x-ms-wma, video/x-ms-asf /          / Extensions acceptées m4a, wav, mp3, txt, jpeg, wma, flac, bmp, csv, pdf, png, docx, gif, + Problème lors du chargement du fichier vers le bucket S3., + Fichier vide, + Aucun fichier sélectionné]"
                 }
               }
             }
