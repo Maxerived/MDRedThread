@@ -406,7 +406,7 @@ class TestApp(unittest.TestCase):
             )
 
         assert response.status_code == 415
-        assert "Formats acceptés" in response.data.decode('utf-8')
+        assert "Extensions acceptées" in response.data.decode('utf-8')
 
 
     @with_client
@@ -466,4 +466,16 @@ class TestApp(unittest.TestCase):
         assert response.status_code == 401
         assert "Mot de passe incorrect." in response.data.decode('utf-8')
 
+
+    @with_client
+    def test_list_files(self, client):
+        """Test de récupération du nom des fichiers dans le bucket"""
+
+        response = client.get("/list_files",
+            headers={"Authorization" : f'Basic {CREDENTIALS}'},
+            content_type="multipart/form-data"
+            )
+
+        assert response.status_code == 200
+        assert type(response.get_json()) is dict
 

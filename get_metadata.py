@@ -55,6 +55,7 @@ EXT_MIME = {
 ALLOWED_FORMATS = list(set([ext.lower() for ext in EXT_MIME.keys()]))
 ALLOWED_MIME_TYPES = list(EXT_MIME.values())
 
+
 def mimetype(filepath):
     """Fonction qui retourne le MIME-type d'un fichier"""
 

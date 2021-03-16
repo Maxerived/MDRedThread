@@ -6,15 +6,13 @@ echo "|-------------------------------------------------------------------------
 echo ""
 echo "Bonjour et bienvenue pour les tests de l'API !"
 echo ""
-echo "Quelques éléments avant de commencer les tests :"
-echo "    - la limite du nombre de requêtes étant paramétrée à 12 par minutes,"
-echo "      si vous allez trop vite, vous aurrez peut-être droit à une"
-echo "      indisponibilité temporaire du service"
-echo "    - l'avant-dernière requête nécessitera votre mot de passe pour pouvoir"
-echo "      être réalisée correctement ; si vous vous trompez dans le mot de passe,"
-echo "      vous pourrez récupérer la commande et la relancer."
+echo "Vous vous apprêtez à débutez les tests de l'application."
+echo "Je vous rappelle que la limite du nombre de requêtes étant paramétrée"
+echo "à 10 par minutes. Si vous allez trop vite, vous aurez peut-être droit"
+echo "à une indisponibilité temporaire du service."
 echo ""
-read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
+read -p "Entrez votre nom d'utilisateur: " username
+read -s -p "Entrez votre mot de passe : " password
 echo ""
 echo "|-----------------------------------------------------------------------------|"
 echo "|              Test de l'API pour accéder à la page d'accueil                 |"
@@ -24,150 +22,169 @@ echo """curl -kiL -X GET https://redthreadapi.drv.p2021.ajoga.fr/"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 curl -kiL -X GET https://redthreadapi.drv.p2021.ajoga.fr/
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|-----------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier PNG                  |"
 echo "|-----------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.png'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.png'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.png"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.png"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|-----------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier JPG                  |"
 echo "|-----------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.jpg'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.jpg'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.jpg"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.jpg"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|-----------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier BMP                  |"
 echo "|-----------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.bmp'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.bmp'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.bmp"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.bmp"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|-----------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier GIF                  |"
 echo "|-----------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.gif'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.gif'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.gif"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.gif"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier CSV                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.csv'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.csv'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.csv"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.csv"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier TXT                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier DOCX                  |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo "curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.docx'"""
+echo "curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.docx'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.docx"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.docx"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier PDF                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.pdf'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.pdf'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.pdf"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.pdf"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier MP3                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.mp3'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.mp3'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.mp3"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.mp3"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier M4A                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.m4a'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.m4a'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.m4a"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.m4a"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier FLAC                  |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.flac'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.flac'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.flac"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.flac"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier OGG                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.ogg'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.ogg'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.ogg"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.ogg"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier OPUS                  |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.opus'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.opus'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.opus"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.opus"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier WAV                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.wav'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.wav'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.wav"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.wav"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API en envoyant un fichier WMA                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.wma'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.wma'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.wma"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.wma"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|  Test de l'API en envoyant un fichier avec une extension non prise en charge |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.py'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.py'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.py"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.py"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|    Test de l'API en envoyant un fichier dans un format non pris en charge    |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/testpy.jpg'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/testpy.jpg'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/testpy.jpg"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/testpy.jpg"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|             Test de l'API en envoyant un fichier trop volumineux             |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.mov'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.mov'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.mov"
+curl -kiL -X POST -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.mov"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                   Test de l'API sans authentification                        |"
 echo "|------------------------------------------------------------------------------|"
@@ -176,68 +193,71 @@ echo """curl -kiL -X POST https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'fil
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 curl -kiL -X POST https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                    Test de l'API avec un login inconnu                       |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u WrongLogin:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
+echo """curl -kiL -X POST -u WrongLogin:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u WrongLogin:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
+curl -kiL -X POST -u WrongLogin:$password https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                 Test de l'API avec un mot de passe invalide                  |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:WrongPassword https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
+echo """curl -kiL -X POST -u $username:WrongPassword https://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:WrongPassword https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
+curl -kiL -X POST -u $username:WrongPassword https://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|                  Test de l'API en faisant une requête http                   |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X POST -u lambda:@ReTh20@ http://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
+echo """curl -kiL -X POST -u $username:<yourpswd> http://redthreadapi.drv.p2021.ajoga.fr/upload -F 'file=@test_files/test.txt'"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X POST -u lambda:@ReTh20@ http://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
+curl -kiL -X POST -u $username:$password http://redthreadapi.drv.p2021.ajoga.fr/upload -F "file=@test_files/test.txt"
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|            Test de l'API pour lister les fichiers dans le bucket             |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X GET -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/list_files"""
+echo """curl -kiL -X GET -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/list_files"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X GET -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/list_files
+curl -kiL -X GET -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/list_files
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|          Test de l'API pour télécharger un fichier depuis le bucket          |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X GET -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/download/<filename>"""
+echo """curl -kiL -X GET -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/download/<filename>"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-var=$(curl -kiL -X GET -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/list_files | tail -n 1 | tr "\"" "\n" | grep txt | sed -n 1p)
-curl -kiL -X GET -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/download/$var
+read -p "Copiez-collez ici le nom d'un des fichiers listés ci-dessus : " file
+curl -kiL -X GET -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/download/$file
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|            Test de l'API pour effacer tous les fichiers du bucket            |"
 echo "|                   (seul l'administrateur peut normalement)                   |"
 echo "|------------------------------------------------------------------------------|"
 echo ""
-echo "     C'est l'avanat-dernière requête, munissez-vous de votre mot de passe."
-echo "       J'ai fait en sorte que vous puissiez effectuer cette étape avec."
-echo ""
-echo "    Si vous vous trompez en écrivant votre mot de passe, copiez la commande"
-echo "   qui va s'afficher ci-dessous et relancez-la jusqu'à ce qu'elle fonctionne."
-echo "    Enfin, récupéréz la dernière commande pour vérifier la vacuité du bucket."
-echo ""
 echo "Requête exécutée :"
-echo """curl -kiL -X DELETE -u francois.laissus https://redthreadapi.drv.p2021.ajoga.fr/empty_bucket"""
+echo """curl -kiL -X DELETE -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/empty_bucket"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X DELETE -u francois.laissus https://redthreadapi.drv.p2021.ajoga.fr/empty_bucket
+curl -kiL -X DELETE -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/empty_bucket
 echo ""
+read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|            Test de l'API pour vérifier que le bucket bien vide               |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X GET -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/list_files"""
+echo """curl -kiL -X GET -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/list_files"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
-curl -kiL -X GET -u lambda:@ReTh20@ https://redthreadapi.drv.p2021.ajoga.fr/list_files
+curl -kiL -X GET -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/list_files
+echo ""
+echo "Les tests sont terminés !!"
+echo ""

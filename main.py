@@ -104,7 +104,8 @@ def download(filename):
         try:
             return send_from_directory(app.config['TEMP_FOLDER'], filename, as_attachment=True), 200
         finally:
-            os.remove(os.path.join(app.config['TEMP_FOLDER'], filename))
+            if os.path.isfile(os.path.join(app.config['TEMP_FOLDER'], filename)):
+                os.remove(os.path.join(app.config['TEMP_FOLDER'], filename))
 
     else:
         return '', 204
