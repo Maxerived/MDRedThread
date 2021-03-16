@@ -7,10 +7,10 @@ services:
     ports:
       - "4995-4999:5000"
     volumes:
-      - /home/ubuntu/.aws:/home/app/.aws:ro
-      - /home/ubuntu/redthread/users_auth.db:/home/app/users_auth.db
+      - /home/ubuntu/.aws:.aws:ro
+      - /home/ubuntu/redthread/users_auth.db:/users_auth.db
     environment:
-      - AWS_SHARED_CREDENTIALS_FILE=/home/app/.aws/credentials
+      - AWS_SHARED_CREDENTIALS_FILE=/.aws/credentials
       - AWS_PROFILE=csloginstudent
 
   nginx:
