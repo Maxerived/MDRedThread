@@ -100,12 +100,13 @@ def download(filename):
 
     download_from_bucket(filename)
 
-    if os.path.isfile(os.path.join(app.config['TEMP_FOLDER'], filename)):
+    filepath = os.path.join(app.config['TEMP_FOLDER'], filename)
+
+    if os.path.isfile(filepath):
         try:
             return send_from_directory(app.config['TEMP_FOLDER'], filename, as_attachment=True), 200
         finally:
-            if os.path.isfile(os.path.join(app.config['TEMP_FOLDER'], filename)):
-                os.remove(os.path.join(app.config['TEMP_FOLDER'], filename))
+            os.remove(filepath)
 
     else:
         return '', 204
