@@ -1,5 +1,8 @@
 #### Projet MDRedThread
 
+Le propos applicatif de cette API est d'accepter le dépôt de tout type de fichier et de le restituer au format JSON.
+L'usage est simple à décrire : l'usager soumet un fichier et récupère sa traduction en JSON, associée à des métadonnées établies lors de sa traduction (type MIME reconnu, taille, etc.). Le retour comporte les métadonnées et les données, bien séparées, et le fichier aussi archivé sur un bucket AWS S3. En cas de format non supporté, une erreur explicite est retournée à l'usager.
+
 Implémentée en python3 et avec Flask comme moteur web, l’API développée prend en charge les fichiers dont le format est parmi les suivants : txt, csv, docx, pdf, bmp, gif, jpg, png, flac, mp3, ogg, wav, wma, m4a, opus.
 
 Pour fonctionner, l’application s’appuie sur les fichiers suivants :
