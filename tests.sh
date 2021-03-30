@@ -6,9 +6,9 @@ echo "|-------------------------------------------------------------------------
 echo ""
 echo "Bonjour et bienvenue pour les tests de l'API !"
 echo ""
-echo "Vous vous apprêtez à débutez les tests de l'application."
-echo "Je vous rappelle que la limite du nombre de requêtes étant paramétrée"
-echo "à 10 par minutes. Si vous allez trop vite, vous aurez peut-être droit"
+echo "Vous vous apprêtez à débuter les tests de l'application."
+echo "Je vous rappelle que la limite du nombre de requêtes est paramétrée"
+echo "à 12 par minutes. Si vous allez trop vite, vous aurez peut-être droit"
 echo "à une indisponibilité temporaire du service."
 echo ""
 read -p "Entrez votre nom d'utilisateur: " username
@@ -236,13 +236,17 @@ echo "|-------------------------------------------------------------------------
 echo "Requête exécutée :"
 echo """curl -kiL -X GET -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/download/<filename>"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
+echo "Il va vous être demandé de copier-coller l'un des noms de fichier listés"
+echo "ci-dessus. Les fichiers txt et csv s'afficheront directement en réponse."
+echo "La réponse avec les fichiers dans les autres formats vous suggéreront d'ajouter"
+echo "une option supplémentaire pour enregistrer le fichier."
 read -p "Copiez-collez ici le nom d'un des fichiers listés ci-dessus : " file
 curl -kiL -X GET -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/download/$file
 echo ""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"
 echo "|            Test de l'API pour effacer tous les fichiers du bucket            |"
-echo "|                   (seul l'administrateur peut normalement)                   |"
+echo "|               (seul l'administrateur le peut en temps normal)                |"
 echo "|------------------------------------------------------------------------------|"
 echo ""
 echo "Requête exécutée :"
