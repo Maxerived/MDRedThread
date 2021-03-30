@@ -15,6 +15,7 @@ app.config['TEMP_FOLDER'] = "./static/temp"
 app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024
 app.secret_key = os.urandom(24)
 
+# Création du répertoire ./static/temps s'il n'existe pas au lancement de l'API
 PATH_FOLDERS = app.config["TEMP_FOLDER"].split("/")
 pathFolder = PATH_FOLDERS[0]
 for folder in PATH_FOLDERS[1:]:
@@ -36,7 +37,6 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
 )
 
 app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
-
 
 @app.after_request
 def after_request(response):
@@ -98,14 +98,18 @@ def list_files():
 def download(filename):
     """Fonction qui télécharge un fichier depuis le bucket S3"""
 
+    # Téléchargement du fichier depuis le bucket sur le serveur
     download_from_bucket(filename)
 
     filepath = os.path.join(app.config['TEMP_FOLDER'], filename)
 
+    # Si le fichier (normalement téléchargé depuis le bucket) existe sur le serveur
     if os.path.isfile(filepath):
         try:
+            # Envoi au client
             return send_from_directory(app.config['TEMP_FOLDER'], filename, as_attachment=True), 200
         finally:
+            # Suppression la fichier du serveur
             os.remove(filepath)
 
     else:
