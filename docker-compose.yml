@@ -4,8 +4,6 @@ services:
   flask:
     build: .
     restart: always
-    ports:
-      - "4995-4999:5000"
     volumes:
       - /home/ubuntu/.aws:.aws:ro
       - /home/ubuntu/redthread/users_auth.db:/users_auth.db
