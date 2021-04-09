@@ -234,14 +234,14 @@ echo "|-------------------------------------------------------------------------
 echo "|          Test de l'API pour télécharger un fichier depuis le bucket          |"
 echo "|------------------------------------------------------------------------------|"
 echo "Requête exécutée :"
-echo """curl -kiL -X GET -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/download/<filename>"""
+echo """curl -X GET -u $username:<yourpswd> https://redthreadapi.drv.p2021.ajoga.fr/download/<filename>"""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "Il va vous être demandé de copier-coller l'un des noms de fichier listés"
 echo "ci-dessus. Les fichiers txt et csv s'afficheront directement en réponse."
 echo "La réponse avec les fichiers dans les autres formats vous suggéreront d'ajouter"
 echo "une option supplémentaire pour enregistrer le fichier."
 read -p "Copiez-collez ici le nom d'un des fichiers listés ci-dessus : " file
-curl -kiL -X GET -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/download/$file
+curl -X GET -u $username:$password https://redthreadapi.drv.p2021.ajoga.fr/download/$file
 echo ""
 read -n 1 -r -s -p $'Appuyez sur Entrée pour continuer\n'
 echo "|------------------------------------------------------------------------------|"

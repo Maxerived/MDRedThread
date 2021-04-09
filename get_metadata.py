@@ -61,10 +61,11 @@ def mimetype(filepath):
 
     try:
         mimeType = magic.from_file(filepath, mime=True)
-        print(mimeType)
+
     except:
         mimeType = magic.Magic(flags=magic.flags.MAGIC_MIME_TYPE).id_filename(filepath)
-        print(mimeType)
+    
+    print(mimeType)
     return mimeType
 
 

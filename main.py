@@ -25,7 +25,7 @@ for folder in PATH_FOLDERS[1:]:
         print("[INFO] Création du répertoire :", pathFolder)
 
 
-SWAGGER_URL = '/swagger'  # URL for exposing Swagger UI (without trailing '/')
+SWAGGER_URL = '/swagger'
 API_URL = "/static/swagger.yaml"
 
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
